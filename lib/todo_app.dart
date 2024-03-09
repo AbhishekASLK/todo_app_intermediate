@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app_intermediate/main.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
 
 class ToDoApp extends StatefulWidget {
@@ -12,10 +13,6 @@ class ToDoApp extends StatefulWidget {
 }
 
 class _ToDoAppState extends State<ToDoApp> {
-  // ====================== DATABASE ================================
-  dynamic database;
-
-  bool emptyList = true;
   // ====================== CONTROLLERS =============================
 
   TextEditingController titleController = TextEditingController();
@@ -24,11 +21,12 @@ class _ToDoAppState extends State<ToDoApp> {
 
   // ====================== TASK LIST ===============================
 
-  List<ToDoModelClass> tasks = [];
+  List<ToDoModelClass> tasks = tasksFromDB;
 
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
+    print(tasks);
     return Scaffold(
       backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       body: Column(
@@ -287,9 +285,10 @@ class _ToDoAppState extends State<ToDoApp> {
         description: descriptionController.text,
         date: dateController.text,
       );
+
       if (!isEdit) {
+        insertTask(obj);
         setState(() {
-          tasks.add(obj);
           if (tasks.isNotEmpty) {
             emptyList = false;
           }
@@ -311,11 +310,13 @@ class _ToDoAppState extends State<ToDoApp> {
     myBottomSheet(true, todoObj);
   }
 
-  void deleteTask(ToDoModelClass todoObj) {
-    tasks.remove(todoObj);
-    if (tasks.isEmpty) {
-      emptyList = true;
-    }
+  void deleteTask(ToDoModelClass todoObj) async {
+    await deleteTasks(todoObj.title);
+    setState(() {
+      if (tasks.isEmpty) {
+        emptyList = true;
+      }
+    });
   }
 
   // ====================== CLEAR CONTROLLER METHOD ===============================

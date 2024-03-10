@@ -66,7 +66,7 @@ Future deleteTasks(String title) async {
   );
 }
 
-Future<void> updateDog(ToDoModelClass obj) async {
+Future<void> updateTask(ToDoModelClass obj) async {
   final db = await database;
 
   await db.update(

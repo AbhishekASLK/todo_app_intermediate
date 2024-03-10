@@ -26,7 +26,6 @@ class _ToDoAppState extends State<ToDoApp> {
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
-    print(tasks);
     return Scaffold(
       backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       body: Column(
@@ -300,7 +299,7 @@ class _ToDoAppState extends State<ToDoApp> {
           description: descriptionController.text,
           date: dateController.text,
         );
-        await updateDog(obj);
+        await updateTask(obj);
         tasks = await getTasks();
         setState(() {});
       }

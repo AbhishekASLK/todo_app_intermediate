@@ -24,7 +24,7 @@ void main() async {
   );
 
   tasksFromDB = await getTasks();
-  if (tasksFromDB.length != 0) {
+  if (tasksFromDB.isNotEmpty) {
     emptyList = false;
   }
 
@@ -63,6 +63,17 @@ Future deleteTasks(String title) async {
     'TaskTable',
     where: 'title = ?',
     whereArgs: [title],
+  );
+}
+
+Future<void> updateDog(ToDoModelClass obj) async {
+  final db = await database;
+
+  await db.update(
+    'TaskTable',
+    obj.taskMap(),
+    where: 'title = ?',
+    whereArgs: [obj.title],
   );
 }
 

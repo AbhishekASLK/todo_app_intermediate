@@ -90,8 +90,8 @@ class _ToDoAppState extends State<ToDoApp> {
                           children: [
                             Image.asset(
                               'assets/no_tasks.png',
-                              height: 300,
-                              width: 300,
+                              height: 250,
+                              width: 250,
                             ),
                             const SizedBox(
                               height: 30,
@@ -287,16 +287,22 @@ class _ToDoAppState extends State<ToDoApp> {
       );
 
       if (!isEdit) {
-        insertTask(obj);
+        await insertTask(obj);
+        tasks = await getTasks();
         setState(() {
           if (tasks.isNotEmpty) {
             emptyList = false;
           }
         });
       } else {
-        todoObj!.title = titleController.text;
-        todoObj.description = descriptionController.text;
-        todoObj.date = dateController.text;
+        obj = ToDoModelClass(
+          title: titleController.text,
+          description: descriptionController.text,
+          date: dateController.text,
+        );
+        await updateDog(obj);
+        tasks = await getTasks();
+        setState(() {});
       }
     }
   }
@@ -312,6 +318,7 @@ class _ToDoAppState extends State<ToDoApp> {
 
   void deleteTask(ToDoModelClass todoObj) async {
     await deleteTasks(todoObj.title);
+    tasks = await getTasks();
     setState(() {
       if (tasks.isEmpty) {
         emptyList = true;
@@ -336,7 +343,7 @@ class _ToDoAppState extends State<ToDoApp> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SizedBox(
-            height: 400,
+            height: 500,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -412,7 +419,12 @@ class _ToDoAppState extends State<ToDoApp> {
                         onPressed: () {
                           setState(
                             () {
-                              isEdit ? submit(true, todoObject) : submit(false);
+                              isEdit
+                                  ? submit(
+                                      true,
+                                      todoObject,
+                                    )
+                                  : submit(false);
                             },
                           );
                           Navigator.pop(context);

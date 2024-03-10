@@ -1,3 +1,3 @@
 # todo_app_intermediate
 
-A new Flutter project.
+Todo App with backend with sqflite.

@@ -1,22 +1,27 @@
 // ====================== MODEL CLASS ===============================
 
 class ToDoModelClass {
+  int? id;
   String title;
   String description;
   String date;
-  int? id;
   ToDoModelClass({
+    this.id,
     required this.title,
     required this.description,
     required this.date,
-    this.id,
   });
 
-  Map<String, String> taskMap() {
+  Map<String, dynamic> taskMap() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'date': date,
     };
+  }
+
+  String toString() {
+    return 'id:$id,title:$title,description:$description,data:$date';
   }
 }

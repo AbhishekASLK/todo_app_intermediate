@@ -129,7 +129,7 @@ class _ToDoAppState extends State<ToDoApp> {
       floatingActionButton: GestureDetector(
         onTap: () {
           clearController();
-          myBottomSheet(false);
+          myBottomSheet(false, tasks.length);
         },
         child: Image.asset('assets/add_button.png'),
       ),
@@ -173,7 +173,7 @@ class _ToDoAppState extends State<ToDoApp> {
                           width: 32,
                           child: GestureDetector(
                             onTap: () {
-                              editTask(tasks[index]);
+                              editTask(index, tasks[index]);
                             },
                             child: const Icon(
                               Icons.edit,
@@ -275,19 +275,21 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   // ====================== SUBMIT METHOD ===============================
-  void submit(bool isEdit, [ToDoModelClass? todoObj]) async {
+  void submit(bool isEdit, index, [ToDoModelClass? todoObj]) async {
     if (titleController.text.trim().isNotEmpty &&
         descriptionController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty) {
       ToDoModelClass obj = ToDoModelClass(
+        id: index,
         title: titleController.text,
         description: descriptionController.text,
         date: dateController.text,
       );
-
+      // print(obj.taskMap());
       if (!isEdit) {
         await insertTask(obj);
         tasks = await getTasks();
+        // print(tasks[0].taskMap());
         setState(() {
           if (tasks.isNotEmpty) {
             emptyList = false;
@@ -295,24 +297,27 @@ class _ToDoAppState extends State<ToDoApp> {
         });
       } else {
         obj = ToDoModelClass(
+          id: index,
           title: titleController.text,
           description: descriptionController.text,
           date: dateController.text,
         );
+        print(obj.id);
         await updateTask(obj);
         tasks = await getTasks();
         setState(() {});
       }
     }
+    print(await getTasks());
   }
 
   // ====================== SUBMIT METHOD ===============================
-  void editTask(ToDoModelClass? todoObj) {
+  void editTask(int index, ToDoModelClass? todoObj) {
     setState(() {});
     titleController.text = todoObj!.title;
     descriptionController.text = todoObj.description;
     dateController.text = todoObj.date;
-    myBottomSheet(true, todoObj);
+    myBottomSheet(true, index, todoObj);
   }
 
   void deleteTask(ToDoModelClass todoObj) async {
@@ -333,7 +338,7 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   // ====================== MYBOTTOMSHEET METHOD ===============================
-  void myBottomSheet(bool isEdit, [ToDoModelClass? todoObject]) {
+  void myBottomSheet(bool isEdit, int index, [ToDoModelClass? todoObject]) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -421,9 +426,10 @@ class _ToDoAppState extends State<ToDoApp> {
                               isEdit
                                   ? submit(
                                       true,
+                                      index,
                                       todoObject,
                                     )
-                                  : submit(false);
+                                  : submit(false, index);
                             },
                           );
                           Navigator.pop(context);

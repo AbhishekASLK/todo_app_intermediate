@@ -12,12 +12,12 @@ bool emptyList = true;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'TodoDB'),
+    join(await getDatabasesPath(), 'ToDoDB2'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
         '''
-        CREATE TABLE TaskTable(title TEXT PRIMARY KEY,description TEXT,date TEXT)
+        CREATE TABLE TaskTable(id INT PRIMARY KEY,title TEXT,description TEXT,date TEXT)
       ''',
       );
     },
@@ -32,6 +32,7 @@ void main() async {
 }
 
 Future insertTask(ToDoModelClass obj) async {
+  // print(obj.taskMap());
   final localDB = await database;
   localDB.insert(
     'TaskTable',
@@ -48,6 +49,7 @@ Future getTasks() async {
     listOfMap.length,
     (index) {
       return ToDoModelClass(
+        id: index,
         title: listOfMap[index]['title'],
         description: listOfMap[index]['description'],
         date: listOfMap[index]['date'],
@@ -66,14 +68,13 @@ Future deleteTasks(String title) async {
   );
 }
 
-Future<void> updateTask(ToDoModelClass obj) async {
+Future<void> updateTask(ToDoModelClass newObj) async {
   final db = await database;
-
   await db.update(
     'TaskTable',
-    obj.taskMap(),
-    where: 'title = ?',
-    whereArgs: [obj.title],
+    newObj.taskMap(),
+    where: 'id = ?',
+    whereArgs: [newObj.id],
   );
 }
 

@@ -179,7 +179,9 @@ class _ToDoAppState extends State<ToDoApp> {
                           width: 32,
                           child: GestureDetector(
                             onTap: () {
-                              editTask(index, tasks[index]);
+                              setState(() {
+                                editTask(index, tasks[index]);
+                              });
                             },
                             child: const Icon(
                               Icons.edit,

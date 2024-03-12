@@ -27,7 +27,11 @@ class _ToDoAppState extends State<ToDoApp> {
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
-    globalID = tasks.length;
+    if (tasks.isEmpty) {
+      globalID = 0;
+    } else {
+      globalID = tasks[tasks.length - 1].id;
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       body: Column(

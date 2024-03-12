@@ -7,12 +7,11 @@ import 'package:todo_app_intermediate/todo_app.dart';
 // ====================== DATABASE ================================
 dynamic database;
 List<ToDoModelClass> tasksFromDB = [];
-bool emptyList = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB2'),
+    join(await getDatabasesPath(), 'ToDoDB24.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
@@ -24,15 +23,11 @@ void main() async {
   );
 
   tasksFromDB = await getTasks();
-  if (tasksFromDB.isNotEmpty) {
-    emptyList = false;
-  }
 
   runApp(const MainApp());
 }
 
 Future insertTask(ToDoModelClass obj) async {
-  // print(obj.taskMap());
   final localDB = await database;
   localDB.insert(
     'TaskTable',
@@ -49,7 +44,7 @@ Future getTasks() async {
     listOfMap.length,
     (index) {
       return ToDoModelClass(
-        id: index,
+        id: listOfMap[index]['id'],
         title: listOfMap[index]['title'],
         description: listOfMap[index]['description'],
         date: listOfMap[index]['date'],
@@ -58,13 +53,13 @@ Future getTasks() async {
   );
 }
 
-Future deleteTasks(String title) async {
+Future deleteTasks(int? id) async {
   final localDB = await database;
 
   await localDB.delete(
     'TaskTable',
-    where: 'title = ?',
-    whereArgs: [title],
+    where: 'id = ?',
+    whereArgs: [id],
   );
 }
 

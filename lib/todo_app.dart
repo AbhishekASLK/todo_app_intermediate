@@ -13,7 +13,6 @@ class ToDoApp extends StatefulWidget {
 }
 
 class _ToDoAppState extends State<ToDoApp> {
-  int globalID = 0;
   // ====================== CONTROLLERS =============================
 
   TextEditingController titleController = TextEditingController();
@@ -23,10 +22,12 @@ class _ToDoAppState extends State<ToDoApp> {
   // ====================== TASK LIST ===============================
 
   List<ToDoModelClass> tasks = tasksFromDB;
+  int? globalID;
 
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
+    globalID = tasks.length;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       body: Column(
@@ -284,11 +285,12 @@ class _ToDoAppState extends State<ToDoApp> {
         dateController.text.trim().isNotEmpty) {
       if (!isEdit) {
         ToDoModelClass obj = ToDoModelClass(
-          id: ++globalID,
+          id: globalID! + 1,
           title: titleController.text,
           description: descriptionController.text,
           date: dateController.text,
         );
+        globalID = globalID! + 1;
         await insertTask(obj);
         tasks = await getTasks();
         setState(() {});

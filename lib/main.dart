@@ -11,12 +11,12 @@ List<ToDoModelClass> tasksFromDB = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB24.db'),
+    join(await getDatabasesPath(), 'ToDoDB27.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
         '''
-        CREATE TABLE TaskTable(id INT PRIMARY KEY,title TEXT,description TEXT,date TEXT)
+        CREATE TABLE TaskTable(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT,description TEXT,date TEXT)
       ''',
       );
     },
@@ -55,7 +55,6 @@ Future getTasks() async {
 
 Future deleteTasks(int? id) async {
   final localDB = await database;
-
   await localDB.delete(
     'TaskTable',
     where: 'id = ?',

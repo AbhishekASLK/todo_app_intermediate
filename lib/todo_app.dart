@@ -1,9 +1,21 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app_intermediate/main.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
+
+// ====================== FLAGS ==================================
+bool isCompleted = false;
+// ====================== CONTROLLERS =============================
+TextEditingController titleController = TextEditingController();
+TextEditingController descriptionController = TextEditingController();
+TextEditingController dateController = TextEditingController();
+
+// ====================== TASK LIST ===============================
+
+List<ToDoModelClass> tasks = tasksFromDB;
 
 class ToDoApp extends StatefulWidget {
   const ToDoApp({super.key});
@@ -13,27 +25,23 @@ class ToDoApp extends StatefulWidget {
 }
 
 class _ToDoAppState extends State<ToDoApp> {
-  // ====================== CONTROLLERS =============================
-
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-
-  // ====================== TASK LIST ===============================
-
-  List<ToDoModelClass> tasks = tasksFromDB;
-  int? globalID;
-
+  List<Icon> listIcon = const [
+    Icon(
+      Icons.school_outlined,
+    ),
+    Icon(
+      Icons.business_outlined,
+    ),
+    Icon(
+      Icons.person_outlined,
+    ),
+  ];
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
-    if (tasks.isEmpty) {
-      globalID = 0;
-    } else {
-      globalID = tasks[tasks.length - 1].id;
-    }
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
+      // backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
+      backgroundColor: const Color.fromRGBO(245, 71, 113, 1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,18 +56,15 @@ class _ToDoAppState extends State<ToDoApp> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
                   Text(
-                    'Good morning!',
+                    'Your Pathway to',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 22,
                     ),
                   ),
                   Text(
-                    'AbhishekASLK',
+                    'Productivity!',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 28,
@@ -77,7 +82,7 @@ class _ToDoAppState extends State<ToDoApp> {
             child: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(217, 217, 217, 1),
+                color: Color.fromRGBO(250, 205, 205, 1),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(40),
                   topLeft: Radius.circular(40),
@@ -117,13 +122,148 @@ class _ToDoAppState extends State<ToDoApp> {
                           height: 10,
                         ),
                         Text(
-                          'CREATE TO DO LIST',
+                          'TO DO LIST',
                           style: GoogleFonts.poppins(
                             fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(0.6),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            child: TextField(
+                              onChanged: (value) {},
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                hintStyle: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      10,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(
                           height: 10,
+                        ),
+                        Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.deepPurple,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    30,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'All',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    30,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Ongoing',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_drop_up,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    30,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Completed',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_drop_up_outlined,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         todoCard(),
                       ],
@@ -137,91 +277,101 @@ class _ToDoAppState extends State<ToDoApp> {
           clearController();
           myBottomSheet(false);
         },
-        child: Image.asset('assets/add_button.png'),
+        child: Image.asset(
+          'assets/add_button.png',
+          height: 52,
+          width: 52,
+        ),
       ),
     );
   }
 
   Expanded todoCard() {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.only(top: 30),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(40),
-            topRight: Radius.circular(40),
-          ),
-          color: Colors.white,
-        ),
-        child: ListView.separated(
-          separatorBuilder: (context, index) {
-            return Container(
-              height: 10,
-              color: const Color.fromRGBO(217, 217, 217, 1),
-            );
-          },
-          shrinkWrap: true,
-          itemCount: tasks.length,
-          itemBuilder: (context, index) {
-            return Slidable(
-              endActionPane: ActionPane(
-                motion: const ScrollMotion(),
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              color: Color.fromRGBO(111, 81, 255, 1),
-                              shape: BoxShape.circle),
-                          height: 32,
-                          width: 32,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                editTask(index, tasks[index]);
-                              });
-                            },
-                            child: const Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                            ),
+      child: ListView.separated(
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            height: 3,
+          );
+        },
+        shrinkWrap: true,
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          return Slidable(
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(111, 81, 255, 1),
+                          shape: BoxShape.circle,
+                        ),
+                        height: 32,
+                        width: 32,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              editTask(index, tasks[index]);
+                            });
+                          },
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              color: Color.fromRGBO(111, 81, 255, 1),
-                              shape: BoxShape.circle),
-                          height: 32,
-                          width: 32,
-                          child: GestureDetector(
-                            onTap: () async {
-                              setState(() {
-                                deleteTask(tasks[index]);
-                              });
-                              tasks = await getTasks();
-                              print(tasks);
-                            },
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(111, 81, 255, 1),
+                          shape: BoxShape.circle,
+                        ),
+                        height: 32,
+                        width: 32,
+                        child: GestureDetector(
+                          onTap: () async {
+                            setState(() {
+                              deleteTask(tasks[index]);
+                            });
+                            tasks = await getTasks();
+                          },
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Container(
                 padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(color: Colors.white),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      20,
+                    ),
+                  ),
+                  gradient: LinearGradient(
+                    stops: [0.1, 0.9],
+                    colors: [
+                      Color.fromRGBO(245, 71, 113, 1),
+                      Color.fromRGBO(152, 83, 206, 1),
+                    ],
+                  ),
+                ),
                 child: Row(
                   children: [
                     const SizedBox(
@@ -234,7 +384,9 @@ class _ToDoAppState extends State<ToDoApp> {
                         shape: BoxShape.circle,
                         color: Color.fromRGBO(217, 217, 217, 1),
                       ),
-                      child: Image.asset('assets/profile.png'),
+                      child: const Icon(
+                        Icons.school,
+                      ),
                     ),
                     const SizedBox(
                       width: 15,
@@ -248,6 +400,7 @@ class _ToDoAppState extends State<ToDoApp> {
                             tasks[index].title,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(
@@ -255,21 +408,37 @@ class _ToDoAppState extends State<ToDoApp> {
                           ),
                           Text(
                             tasks[index].description,
-                            style: GoogleFonts.poppins(),
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
                           Text(
                             tasks[index].date,
-                            style: GoogleFonts.poppins(),
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCompleted = !isCompleted;
+                        });
+                      },
+                      child: (isCompleted)
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: Colors.yellow,
+                            )
+                          : const Icon(
+                              Icons.radio_button_unchecked,
+                              color: Colors.white,
+                            ),
                     ),
                     const SizedBox(
                       width: 10,
@@ -277,9 +446,9 @@ class _ToDoAppState extends State<ToDoApp> {
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -291,12 +460,10 @@ class _ToDoAppState extends State<ToDoApp> {
         dateController.text.trim().isNotEmpty) {
       if (!isEdit) {
         ToDoModelClass obj = ToDoModelClass(
-          id: globalID! + 1,
           title: titleController.text,
           description: descriptionController.text,
           date: dateController.text,
         );
-        globalID = globalID! + 1;
         await insertTask(obj);
         tasks = await getTasks();
         setState(() {});
@@ -339,48 +506,134 @@ class _ToDoAppState extends State<ToDoApp> {
   // ====================== MYBOTTOMSHEET METHOD ===============================
   void myBottomSheet(bool isEdit, [ToDoModelClass? todoObject]) {
     showModalBottomSheet(
+      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        return BottomSheetHotReload(
+          isEdit: isEdit,
+          todoObject: todoObject,
+        );
+      },
+    );
+  }
+}
+
+class BottomSheetHotReload extends StatefulWidget {
+  bool? isEdit;
+  ToDoModelClass? todoObject;
+  BottomSheetHotReload({super.key, this.isEdit, this.todoObject});
+
+  @override
+  State<BottomSheetHotReload> createState() => _BottomSheetHotReloadState();
+}
+
+class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            top: MediaQuery.of(context).viewInsets.top,
+          ),
           child: SizedBox(
-            height: 500,
+            height: 600,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Create ToDo',
-                        style: TextStyle(
+                        'Create Task',
+                        style: GoogleFonts.poppins(
                           fontSize: 20,
+                          color: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                  const Text('Title'),
+                  Text(
+                    'Title',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   TextFormField(
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                     controller: titleController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const Text('Description'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Description',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   TextFormField(
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    maxLines: 3,
                     controller: descriptionController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const Text('Date'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Date',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   TextFormField(
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                     readOnly: true,
                     controller: dateController,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2024),
+                        lastDate: DateTime(2030),
+                      );
+                      if (pickedDate != null) {
+                        String formatDate =
+                            DateFormat.yMMMd().format(pickedDate);
+                        setState(() {
+                          dateController.text = formatDate;
+                        });
+                      }
+                    },
                     decoration: InputDecoration(
                       suffixIcon: GestureDetector(
                         onTap: () async {
@@ -390,13 +643,18 @@ class _ToDoAppState extends State<ToDoApp> {
                             firstDate: DateTime(2024),
                             lastDate: DateTime(2030),
                           );
-                          String formatDate =
-                              DateFormat.yMMMd().format(pickedDate!);
-                          setState(() {
-                            dateController.text = formatDate;
-                          });
+                          if (pickedDate != null) {
+                            String formatDate =
+                                DateFormat.yMMMd().format(pickedDate);
+                            setState(() {
+                              dateController.text = formatDate;
+                            });
+                          }
                         },
-                        child: const Icon(Icons.calendar_month),
+                        child: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.white,
+                        ),
                       ),
                       border: const OutlineInputBorder(),
                     ),
@@ -405,24 +663,63 @@ class _ToDoAppState extends State<ToDoApp> {
                     height: 30,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          const Icon(
+                            Icons.school_outlined,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Educational',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Icon(
+                            Icons.business_outlined,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Business',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Icon(
+                            Icons.person_2_outlined,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Personal',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        style: const ButtonStyle(
-                          foregroundColor: MaterialStatePropertyAll(
-                            Colors.white,
-                          ),
-                          backgroundColor: MaterialStatePropertyAll(
-                            Colors.green,
-                          ),
-                          fixedSize: MaterialStatePropertyAll(
-                            Size(200, 50),
-                          ),
-                        ),
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           setState(
                             () {
-                              isEdit
+                              widget.isEdit!
                                   ? submit(
                                       true,
                                       todoObject,
@@ -432,10 +729,24 @@ class _ToDoAppState extends State<ToDoApp> {
                           );
                           Navigator.pop(context);
                         },
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(
-                            fontSize: 25,
+                        child: Container(
+                          height: 50,
+                          width: 300,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(89, 57, 241, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Submit',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -445,8 +756,8 @@ class _ToDoAppState extends State<ToDoApp> {
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

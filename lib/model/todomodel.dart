@@ -21,6 +21,7 @@ class ToDoModelClass {
     };
   }
 
+  @override
   String toString() {
     return 'id:$id,title:$title,description:$description,data:$date';
   }

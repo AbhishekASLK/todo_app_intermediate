@@ -11,7 +11,7 @@ List<ToDoModelClass> tasksFromDB = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB3.db'),
+    join(await getDatabasesPath(), 'ToDoDB6.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:todo_app_intermediate/bottom_sheet.dart';
+import 'package:todo_app_intermediate/screens/bottom_sheet.dart';
 import 'package:todo_app_intermediate/main.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
 
@@ -269,7 +269,7 @@ class _ToDoAppState extends State<ToDoApp> {
         ],
       ),
       floatingActionButton: GestureDetector(
-        onTap: () async {
+        onTap: () {
           clearController();
           myBottomSheet(false);
         },

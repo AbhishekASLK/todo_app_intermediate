@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
-import 'package:todo_app_intermediate/todo_app.dart';
+import 'package:todo_app_intermediate/screens/todo_app.dart';
 
 // ====================== DATABASE ================================
 dynamic database;
@@ -11,7 +11,7 @@ List<ToDoModelClass> tasksFromDB = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB6.db'),
+    join(await getDatabasesPath(), 'ToDoDB14.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
@@ -27,9 +27,7 @@ void main() async {
       );
     },
   );
-
   tasksFromDB = await getTasks();
-
   runApp(const MainApp());
 }
 

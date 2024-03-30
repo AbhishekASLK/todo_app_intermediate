@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app_intermediate/main.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
-import 'package:todo_app_intermediate/todo_app.dart';
+import 'package:todo_app_intermediate/screens/todo_app.dart';
 
 class BottomSheetHotReload extends StatefulWidget {
   final bool? isEdit;
@@ -236,13 +237,16 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          widget.isEdit!
-                              ? submit(
-                                  true,
-                                  widget.todoObject,
-                                )
-                              : submit(false);
-                          setState(() {});
+                          setState(
+                            () {
+                              widget.isEdit!
+                                  ? submit(
+                                      true,
+                                      widget.todoObject,
+                                    )
+                                  : submit(false);
+                            },
+                          );
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -277,13 +281,8 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
     );
   }
 
-  void insertAndFetch(ToDoModelClass obj) async {
-    await insertTask(obj);
-    tasks = await getTasks();
-  }
-
   // ====================== SUBMIT METHOD ===============================
-  void submit(bool isEdit, [ToDoModelClass? todoObj]) {
+  void submit(bool isEdit, [ToDoModelClass? todoObj]) async {
     if (titleController.text.trim().isNotEmpty &&
         descriptionController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty) {
@@ -294,7 +293,8 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
           date: dateController.text,
           completed: 0,
         );
-        insertAndFetch(obj);
+        await insertTask(obj);
+        tasks = await getTasks();
       } else {
         ToDoModelClass obj = ToDoModelClass(
           id: todoObj!.id,
@@ -303,7 +303,9 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
           date: dateController.text,
           completed: 0,
         );
-        insertAndFetch(obj);
+        await insertTask(obj);
+        tasks = await getTasks();
+        setState(() {});
       }
     }
   }

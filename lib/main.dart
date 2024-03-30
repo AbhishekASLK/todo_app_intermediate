@@ -11,12 +11,18 @@ List<ToDoModelClass> tasksFromDB = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB27.db'),
+    join(await getDatabasesPath(), 'ToDoDB3.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
         '''
-        CREATE TABLE TaskTable(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT,description TEXT,date TEXT)
+        CREATE TABLE TaskTable(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT,
+          description TEXT,
+          date TEXT,
+          completed INTEGER
+        )
       ''',
       );
     },
@@ -29,7 +35,7 @@ void main() async {
 
 Future insertTask(ToDoModelClass obj) async {
   final localDB = await database;
-  localDB.insert(
+  await localDB.insert(
     'TaskTable',
     obj.taskMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
@@ -44,11 +50,11 @@ Future getTasks() async {
     listOfMap.length,
     (index) {
       return ToDoModelClass(
-        id: listOfMap[index]['id'],
-        title: listOfMap[index]['title'],
-        description: listOfMap[index]['description'],
-        date: listOfMap[index]['date'],
-      );
+          id: listOfMap[index]['id'],
+          title: listOfMap[index]['title'],
+          description: listOfMap[index]['description'],
+          date: listOfMap[index]['date'],
+          completed: listOfMap[index]['completed']);
     },
   );
 }

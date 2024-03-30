@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:todo_app_intermediate/main.dart';
 import 'package:todo_app_intermediate/model/todomodel.dart';
 
-// ====================== FLAGS ==================================
-bool isCompleted = false;
 // ====================== CONTROLLERS =============================
 TextEditingController titleController = TextEditingController();
 TextEditingController descriptionController = TextEditingController();
@@ -40,7 +38,6 @@ class _ToDoAppState extends State<ToDoApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       backgroundColor: const Color.fromRGBO(245, 71, 113, 1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,19 +423,12 @@ class _ToDoAppState extends State<ToDoApp> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          isCompleted = !isCompleted;
-                        });
+                        setState(() {});
                       },
-                      child: (isCompleted)
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: Colors.yellow,
-                            )
-                          : const Icon(
-                              Icons.radio_button_unchecked,
-                              color: Colors.white,
-                            ),
+                      child: const Icon(
+                        Icons.radio_button_unchecked,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
@@ -453,35 +443,7 @@ class _ToDoAppState extends State<ToDoApp> {
     );
   }
 
-  // ====================== SUBMIT METHOD ===============================
-  void submit(bool isEdit, [ToDoModelClass? todoObj]) async {
-    if (titleController.text.trim().isNotEmpty &&
-        descriptionController.text.trim().isNotEmpty &&
-        dateController.text.trim().isNotEmpty) {
-      if (!isEdit) {
-        ToDoModelClass obj = ToDoModelClass(
-          title: titleController.text,
-          description: descriptionController.text,
-          date: dateController.text,
-        );
-        await insertTask(obj);
-        tasks = await getTasks();
-        setState(() {});
-      } else {
-        ToDoModelClass obj = ToDoModelClass(
-          id: todoObj!.id,
-          title: titleController.text,
-          description: descriptionController.text,
-          date: dateController.text,
-        );
-        await updateTask(obj);
-        tasks = await getTasks();
-        setState(() {});
-      }
-    }
-  }
-
-  // ====================== SUBMIT METHOD ===============================
+  // ====================== EDIT METHOD ===============================
   void editTask(int index, ToDoModelClass? todoObj) {
     setState(() {});
     titleController.text = todoObj!.title;
@@ -520,15 +482,16 @@ class _ToDoAppState extends State<ToDoApp> {
 }
 
 class BottomSheetHotReload extends StatefulWidget {
-  bool? isEdit;
-  ToDoModelClass? todoObject;
-  BottomSheetHotReload({super.key, this.isEdit, this.todoObject});
+  final bool? isEdit;
+  final ToDoModelClass? todoObject;
+  const BottomSheetHotReload({super.key, this.isEdit, this.todoObject});
 
   @override
   State<BottomSheetHotReload> createState() => _BottomSheetHotReloadState();
 }
 
 class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
+  String selectedCategory = '';
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -665,47 +628,77 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Column(
-                        children: [
-                          const Icon(
-                            Icons.school_outlined,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Educational',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Educational';
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.school_outlined,
+                              size: 30,
+                              color: (selectedCategory != 'Educational')
+                                  ? Colors.white
+                                  : Colors.yellow,
                             ),
-                          ),
-                        ],
+                            Text(
+                              'Educational',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: [
-                          const Icon(
-                            Icons.business_outlined,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Business',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Business';
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            Icon(
+                              size: 30,
+                              Icons.business_outlined,
+                              color: (selectedCategory != 'Business')
+                                  ? Colors.white
+                                  : Colors.yellow,
                             ),
-                          ),
-                        ],
+                            Text(
+                              'Business',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: [
-                          const Icon(
-                            Icons.person_2_outlined,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Personal',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Personal';
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            Icon(
+                              size: 30,
+                              Icons.person_outline,
+                              color: (selectedCategory != 'Personal')
+                                  ? Colors.white
+                                  : Colors.yellow,
                             ),
-                          ),
-                        ],
+                            Text(
+                              'Personal',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -717,16 +710,13 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          setState(
-                            () {
-                              widget.isEdit!
-                                  ? submit(
-                                      true,
-                                      todoObject,
-                                    )
-                                  : submit(false);
-                            },
-                          );
+                          widget.isEdit!
+                              ? submit(
+                                  true,
+                                  widget.todoObject,
+                                )
+                              : submit(false);
+                          setState(() {});
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -759,5 +749,37 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
         ),
       ),
     );
+  }
+
+  Future insertAndFetch(ToDoModelClass obj) async {
+    await insertTask(obj);
+    tasks = await getTasks();
+  }
+
+  // ====================== SUBMIT METHOD ===============================
+  void submit(bool isEdit, [ToDoModelClass? todoObj]) async {
+    if (titleController.text.trim().isNotEmpty &&
+        descriptionController.text.trim().isNotEmpty &&
+        dateController.text.trim().isNotEmpty) {
+      if (!isEdit) {
+        ToDoModelClass obj = ToDoModelClass(
+          title: titleController.text,
+          description: descriptionController.text,
+          date: dateController.text,
+          completed: 0,
+        );
+        await insertAndFetch(obj);
+      } else {
+        ToDoModelClass obj = ToDoModelClass(
+          id: todoObj!.id,
+          title: titleController.text,
+          description: descriptionController.text,
+          date: dateController.text,
+          completed: 0,
+        );
+        await insertAndFetch(obj);
+      }
+      setState(() {});
+    }
   }
 }

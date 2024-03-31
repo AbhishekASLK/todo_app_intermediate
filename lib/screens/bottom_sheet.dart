@@ -17,8 +17,9 @@ class BottomSheetHotReload extends StatefulWidget {
   State<BottomSheetHotReload> createState() => _BottomSheetHotReloadState();
 }
 
+String selectedCategory = '';
+
 class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
-  String selectedCategory = '';
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -247,7 +248,6 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
                                     )
                                   : submit(false, widget.homeState);
                             });
-                            Navigator.pop(context);
                           },
                           child: Container(
                             height: 50,
@@ -284,14 +284,18 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
 
   // ====================== SUBMIT METHOD ===============================
   void submit(bool isEdit, homeState, {ToDoModelClass? todoObj}) async {
+    bool validSubmit = false;
     if (titleController.text.trim().isNotEmpty &&
         descriptionController.text.trim().isNotEmpty &&
-        dateController.text.trim().isNotEmpty) {
+        dateController.text.trim().isNotEmpty &&
+        selectedCategory.isNotEmpty) {
+      validSubmit = true;
       if (!isEdit) {
         ToDoModelClass obj = ToDoModelClass(
           title: titleController.text,
           description: descriptionController.text,
           date: dateController.text,
+          category: selectedCategory,
           completed: 0,
         );
         await insertTask(obj);
@@ -305,6 +309,7 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
           title: titleController.text,
           description: descriptionController.text,
           date: dateController.text,
+          category: selectedCategory,
           completed: todoObj.completed,
         );
         await insertTask(obj);
@@ -312,6 +317,9 @@ class _BottomSheetHotReloadState extends State<BottomSheetHotReload> {
         homeState(() {
           updateLists();
         });
+      }
+      if (validSubmit) {
+        Navigator.pop(context);
       }
     }
   }

@@ -11,7 +11,7 @@ List<ToDoModelClass> tasksFromDB = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   database = openDatabase(
-    join(await getDatabasesPath(), 'ToDoDB108.db'),
+    join(await getDatabasesPath(), 'ToDoDB113.db'),
     version: 1,
     onCreate: (db, version) {
       db.execute(
@@ -21,6 +21,7 @@ void main() async {
           title TEXT,
           description TEXT,
           date TEXT,
+          category TEXT,
           completed INTEGER
         )
       ''',
@@ -52,6 +53,7 @@ Future getTasks() async {
           title: listOfMap[index]['title'],
           description: listOfMap[index]['description'],
           date: listOfMap[index]['date'],
+          category: listOfMap[index]['category'],
           completed: listOfMap[index]['completed']);
     },
   );

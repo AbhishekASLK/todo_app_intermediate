@@ -253,11 +253,8 @@ class _ToDoAppState extends State<ToDoApp> {
                                 setState(() {
                                   pressedButton = 'Ongoing';
                                   status = 'Ongoing';
-                                  displayList = allTasks;
-                                  ongoingTasks = displayList;
                                   filterOnGoingTasks();
                                   searchList = ongoingTasks;
-
                                   updateDisplayList(status);
                                 });
                               },
@@ -303,8 +300,9 @@ class _ToDoAppState extends State<ToDoApp> {
                                 setState(() {
                                   pressedButton = 'Completed';
                                   status = 'Completed';
-                                  searchList = completedTasks;
                                   filterCompletedTasks();
+                                  print(searchList.length);
+                                  searchList = completedTasks;
                                   updateDisplayList(status);
                                 });
                               },
@@ -440,8 +438,12 @@ class _ToDoAppState extends State<ToDoApp> {
                           shape: BoxShape.circle,
                           color: Color.fromRGBO(217, 217, 217, 1),
                         ),
-                        child: const Icon(
-                          Icons.school,
+                        child: Icon(
+                          (searchList[index].category == 'Educational')
+                              ? Icons.school_outlined
+                              : (searchList[index].category == 'Business')
+                                  ? Icons.business_outlined
+                                  : Icons.person_outlined,
                         ),
                       ),
                       const SizedBox(
@@ -472,7 +474,7 @@ class _ToDoAppState extends State<ToDoApp> {
                               height: 5,
                             ),
                             Text(
-                              displayList[index].date,
+                              searchList[index].date,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                               ),
@@ -482,18 +484,58 @@ class _ToDoAppState extends State<ToDoApp> {
                       ),
                       GestureDetector(
                         onTap: () async {
+                          int? id;
+                          String title = '';
+                          String description = '';
+                          String date = '';
+                          String category = '';
+                          int? completed;
+                          if (status == 'All') {
+                            id = allTasks[index].id;
+                            title = allTasks[index].title;
+                            description = allTasks[index].description;
+                            date = allTasks[index].date;
+                            category = allTasks[index].category;
+                            if (allTasks[index].completed == 0) {
+                              completed = 1;
+                            } else {
+                              completed = 0;
+                            }
+                          } else if (status == 'Completed') {
+                            id = completedTasks[index].id;
+                            title = completedTasks[index].title;
+                            description = completedTasks[index].description;
+                            category = completedTasks[index].category;
+                            if (completedTasks[index].completed == 0) {
+                              completed = 1;
+                            } else {
+                              completed = 0;
+                            }
+                          } else if (status == 'Ongoing') {
+                            id = ongoingTasks[index].id;
+                            title = ongoingTasks[index].title;
+                            description = ongoingTasks[index].description;
+                            category = ongoingTasks[index].category;
+                            if (ongoingTasks[index].completed == 0) {
+                              completed = 1;
+                            } else {
+                              completed = 0;
+                            }
+                          }
                           ToDoModelClass newObj = ToDoModelClass(
-                            id: allTasks[index].id,
-                            title: allTasks[index].title,
-                            description: allTasks[index].description,
-                            date: allTasks[index].date,
-                            completed: 1,
+                            id: id,
+                            title: title,
+                            description: description,
+                            date: date,
+                            category: category,
+                            completed: completed,
                           );
                           await updateTask(newObj);
                           allTasks = await getTasks();
                           displayList = allTasks;
                           filterOnGoingTasks();
                           filterCompletedTasks();
+                          setState(() {});
                           if (status == 'All') {
                             searchList = allTasks;
                           } else if (status == 'Completed') {
@@ -536,6 +578,19 @@ class _ToDoAppState extends State<ToDoApp> {
   void deleteTask(ToDoModelClass obj) async {
     deleteTasks(obj.id);
     allTasks = await getTasks();
+    displayList = allTasks;
+    updateDisplayList(status);
+    filterOnGoingTasks();
+    filterCompletedTasks();
+    if (status == 'All') {
+      searchList = allTasks;
+    }
+    if (status == 'Completed') {
+      searchList = completedTasks;
+    }
+    if (status == 'Ongoing') {
+      searchList = ongoingTasks;
+    }
     setState(() {});
   }
 
@@ -548,6 +603,7 @@ class _ToDoAppState extends State<ToDoApp> {
 
   // ====================== MYBOTTOMSHEET METHOD ===============================
   void myBottomSheet(bool isEdit, setState, {ToDoModelClass? todoObject}) {
+    selectedCategory = '';
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

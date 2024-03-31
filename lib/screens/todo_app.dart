@@ -167,7 +167,7 @@ class _ToDoAppState extends State<ToDoApp> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Row(
                     children: [
@@ -313,9 +313,6 @@ class _ToDoAppState extends State<ToDoApp> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
                   todoCard(),
                 ],
               ),
@@ -370,14 +367,14 @@ class _ToDoAppState extends State<ToDoApp> {
       child: ListView.separated(
         separatorBuilder: (context, index) {
           return const SizedBox(
-            height: 3,
+            height: 4,
           );
         },
         shrinkWrap: true,
         itemCount: searchList.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: Slidable(
               endActionPane: ActionPane(
                 motion: const ScrollMotion(),
@@ -413,155 +410,152 @@ class _ToDoAppState extends State<ToDoApp> {
                   ),
                 ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(
-                        20,
-                      ),
-                    ),
-                    gradient: LinearGradient(
-                      stops: [0.1, 0.9],
-                      colors: [
-                        Color.fromRGBO(245, 71, 113, 1),
-                        Color.fromRGBO(152, 83, 206, 1),
-                      ],
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      20,
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Container(
-                        height: 52,
-                        width: 52,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color.fromRGBO(217, 217, 217, 1),
-                        ),
-                        child: Icon(
-                          (searchList[index].category == 'Educational')
-                              ? Icons.school_outlined
-                              : (searchList[index].category == 'Business')
-                                  ? Icons.business_outlined
-                                  : Icons.person_outlined,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              searchList[index].title,
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              searchList[index].description,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              searchList[index].date,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          int? id;
-                          String title = '';
-                          String description = '';
-                          String date = '';
-                          String category = '';
-                          int? completed;
-                          if (status == 'All') {
-                            id = allTasks[index].id;
-                            title = allTasks[index].title;
-                            description = allTasks[index].description;
-                            date = allTasks[index].date;
-                            category = allTasks[index].category;
-                            if (allTasks[index].completed == 0) {
-                              completed = 1;
-                            } else {
-                              completed = 0;
-                            }
-                          } else if (status == 'Completed') {
-                            id = completedTasks[index].id;
-                            title = completedTasks[index].title;
-                            description = completedTasks[index].description;
-                            category = completedTasks[index].category;
-                            if (completedTasks[index].completed == 0) {
-                              completed = 1;
-                            } else {
-                              completed = 0;
-                            }
-                          } else if (status == 'Ongoing') {
-                            id = ongoingTasks[index].id;
-                            title = ongoingTasks[index].title;
-                            description = ongoingTasks[index].description;
-                            category = ongoingTasks[index].category;
-                            if (ongoingTasks[index].completed == 0) {
-                              completed = 1;
-                            } else {
-                              completed = 0;
-                            }
-                          }
-                          ToDoModelClass newObj = ToDoModelClass(
-                            id: id,
-                            title: title,
-                            description: description,
-                            date: date,
-                            category: category,
-                            completed: completed,
-                          );
-                          await updateTask(newObj);
-                          allTasks = await getTasks();
-                          displayList = allTasks;
-                          filterOnGoingTasks();
-                          filterCompletedTasks();
-                          setState(() {});
-                          if (status == 'All') {
-                            searchList = allTasks;
-                          } else if (status == 'Completed') {
-                            searchList = completedTasks;
-                          } else if (status == 'Ongoing') {
-                            searchList = ongoingTasks;
-                          }
-                          setState(() {});
-                        },
-                        child: Icon(
-                          (searchList[index].completed == 0)
-                              ? Icons.circle_outlined
-                              : Icons.check_circle,
-                          color: Colors.yellow,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                  gradient: LinearGradient(
+                    stops: [0.1, 0.9],
+                    colors: [
+                      Color.fromRGBO(245, 71, 113, 1),
+                      Color.fromRGBO(152, 83, 206, 1),
                     ],
                   ),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Container(
+                      height: 52,
+                      width: 52,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromRGBO(217, 217, 217, 1),
+                      ),
+                      child: Icon(
+                        (searchList[index].category == 'Educational')
+                            ? Icons.school_outlined
+                            : (searchList[index].category == 'Business')
+                                ? Icons.business_outlined
+                                : Icons.person_outlined,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            searchList[index].title,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            searchList[index].description,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            searchList[index].date,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        int? id;
+                        String title = '';
+                        String description = '';
+                        String date = '';
+                        String category = '';
+                        int? completed;
+                        if (status == 'All') {
+                          id = allTasks[index].id;
+                          title = allTasks[index].title;
+                          description = allTasks[index].description;
+                          date = allTasks[index].date;
+                          category = allTasks[index].category;
+                          if (allTasks[index].completed == 0) {
+                            completed = 1;
+                          } else {
+                            completed = 0;
+                          }
+                        } else if (status == 'Completed') {
+                          id = completedTasks[index].id;
+                          title = completedTasks[index].title;
+                          description = completedTasks[index].description;
+                          category = completedTasks[index].category;
+                          if (completedTasks[index].completed == 0) {
+                            completed = 1;
+                          } else {
+                            completed = 0;
+                          }
+                        } else if (status == 'Ongoing') {
+                          id = ongoingTasks[index].id;
+                          title = ongoingTasks[index].title;
+                          description = ongoingTasks[index].description;
+                          category = ongoingTasks[index].category;
+                          if (ongoingTasks[index].completed == 0) {
+                            completed = 1;
+                          } else {
+                            completed = 0;
+                          }
+                        }
+                        ToDoModelClass newObj = ToDoModelClass(
+                          id: id,
+                          title: title,
+                          description: description,
+                          date: date,
+                          category: category,
+                          completed: completed,
+                        );
+                        await updateTask(newObj);
+                        allTasks = await getTasks();
+                        displayList = allTasks;
+                        filterOnGoingTasks();
+                        filterCompletedTasks();
+                        setState(() {});
+                        if (status == 'All') {
+                          searchList = allTasks;
+                        } else if (status == 'Completed') {
+                          searchList = completedTasks;
+                        } else if (status == 'Ongoing') {
+                          searchList = ongoingTasks;
+                        }
+                        setState(() {});
+                      },
+                      child: Icon(
+                        (searchList[index].completed == 0)
+                            ? Icons.circle_outlined
+                            : Icons.check_circle,
+                        color: Colors.yellow,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
                 ),
               ),
             ),

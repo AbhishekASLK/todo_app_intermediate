@@ -135,7 +135,8 @@ class _ToDoAppState extends State<ToDoApp> {
                     height: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding:
+                        const EdgeInsets.only(bottom: 10, left: 10, right: 10),
                     child: SizedBox(
                       child: TextField(
                         onChanged: (value) {

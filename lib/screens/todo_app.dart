@@ -118,236 +118,207 @@ class _ToDoAppState extends State<ToDoApp> {
                   topLeft: Radius.circular(40),
                 ),
               ),
-              child: (allTasks.isEmpty)
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/no_tasks.png',
-                              height: 250,
-                              width: 250,
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            const Text(
-                              'Nothing to do!',
-                              style: TextStyle(
-                                fontSize: 25,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'TO DO LIST',
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black.withOpacity(0.6),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SizedBox(
-                            child: TextField(
-                              onChanged: (value) {
-                                setState(() {
-                                  searchList = displayList
-                                      .where((element) => element.title
-                                          .toLowerCase()
-                                          .contains(value.toLowerCase()))
-                                      .toList();
-                                });
-                              },
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Search',
-                                hintStyle: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  pressedButton = 'All';
-                                  status = 'All';
-                                  searchList = allTasks;
-                                  updateDisplayList(status);
-                                });
-                              },
-                              child: Container(
-                                height: 40,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                decoration: const BoxDecoration(
-                                  color: Colors.deepPurple,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      30,
-                                    ),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'All',
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Icon(
-                                        (pressedButton == 'All')
-                                            ? Icons.arrow_drop_up
-                                            : Icons.arrow_drop_down,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  pressedButton = 'Ongoing';
-                                  status = 'Ongoing';
-                                  filterOnGoingTasks();
-                                  searchList = ongoingTasks;
-                                  updateDisplayList(status);
-                                });
-                              },
-                              child: Container(
-                                height: 40,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      30,
-                                    ),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Ongoing',
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Icon(
-                                        (pressedButton == 'Ongoing')
-                                            ? Icons.arrow_drop_up
-                                            : Icons.arrow_drop_down,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  pressedButton = 'Completed';
-                                  status = 'Completed';
-                                  filterCompletedTasks();
-                                  print(searchList.length);
-                                  searchList = completedTasks;
-                                  updateDisplayList(status);
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      30,
-                                    ),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Completed',
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Icon(
-                                        (pressedButton == 'Completed')
-                                            ? Icons.arrow_drop_up_outlined
-                                            : Icons.arrow_drop_down_outlined,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        todoCard(),
-                      ],
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'TO DO LIST',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black.withOpacity(0.6),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            searchList = displayList
+                                .where((element) => element.title
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
+                          });
+                        },
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w400,
+                          ),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            pressedButton = 'All';
+                            status = 'All';
+                            searchList = allTasks;
+                            updateDisplayList(status);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                8,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'All',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  (pressedButton == 'All')
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            pressedButton = 'Ongoing';
+                            status = 'Ongoing';
+                            filterOnGoingTasks();
+                            searchList = ongoingTasks;
+                            updateDisplayList(status);
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                8,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Ongoing',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  (pressedButton == 'Ongoing')
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            pressedButton = 'Completed';
+                            status = 'Completed';
+                            filterCompletedTasks();
+                            searchList = completedTasks;
+                            updateDisplayList(status);
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                8,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Completed',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  (pressedButton == 'Completed')
+                                      ? Icons.arrow_drop_up_outlined
+                                      : Icons.arrow_drop_down_outlined,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  todoCard(),
+                ],
+              ),
             ),
           ),
         ],
@@ -367,6 +338,34 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   Expanded todoCard() {
+    if (searchList.isEmpty) {
+      return Expanded(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/no_tasks.png',
+                  height: 200,
+                  width: 200,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'No Tasks Found',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return Expanded(
       child: ListView.separated(
         separatorBuilder: (context, index) {
@@ -572,6 +571,7 @@ class _ToDoAppState extends State<ToDoApp> {
     titleController.text = todoObj!.title;
     descriptionController.text = todoObj.description;
     dateController.text = todoObj.date;
+    selectedCategory = todoObj.category;
     myBottomSheet(true, setState, todoObject: todoObj);
   }
 
@@ -603,7 +603,15 @@ class _ToDoAppState extends State<ToDoApp> {
 
   // ====================== MYBOTTOMSHEET METHOD ===============================
   void myBottomSheet(bool isEdit, setState, {ToDoModelClass? todoObject}) {
-    selectedCategory = '';
+    if (isEdit) {
+      titleController.text = todoObject!.title;
+      descriptionController.text = todoObject.description;
+      dateController.text = todoObject.date;
+      selectedCategory = todoObject.category;
+    } else {
+      selectedCategory = '';
+    }
+
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

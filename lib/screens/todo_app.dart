@@ -382,8 +382,11 @@ class _ToDoAppState extends State<ToDoApp> {
               endActionPane: ActionPane(
                 motion: const ScrollMotion(),
                 children: [
+                  const SizedBox(
+                    width: 5,
+                  ),
                   SlidableAction(
-                    borderRadius: BorderRadius.circular(1000),
+                    borderRadius: BorderRadius.circular(20),
                     backgroundColor: const Color(0xFF7BC043),
                     foregroundColor: Colors.white,
                     onPressed: (context) {
@@ -393,8 +396,11 @@ class _ToDoAppState extends State<ToDoApp> {
                     },
                     icon: Icons.edit,
                   ),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   SlidableAction(
-                    borderRadius: BorderRadius.circular(1000),
+                    borderRadius: BorderRadius.circular(20),
                     backgroundColor: const Color.fromARGB(255, 218, 8, 8),
                     foregroundColor: Colors.white,
                     onPressed: (context) async {

@@ -9,6 +9,7 @@ import 'package:todo_app_intermediate/screens/todo_app.dart';
 class BottomSheetHotReload extends StatefulWidget {
   final bool? isEdit;
   final ToDoModelClass? todoObject;
+  // ignore: prefer_typing_uninitialized_variables
   final homeState;
   const BottomSheetHotReload(
       {super.key, this.isEdit, this.todoObject, this.homeState});

@@ -379,133 +379,142 @@ class _ToDoAppState extends State<ToDoApp> {
         shrinkWrap: true,
         itemCount: searchList.length,
         itemBuilder: (context, index) {
-          return Slidable(
-            endActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    setState(() {
-                      editTask(index, allTasks[index]);
-                    });
-                  },
-                  icon: Icons.edit,
-                ),
-                SlidableAction(
-                  onPressed: (context) async {
-                    setState(() {
-                      deleteTask(allTasks[index]);
-                    });
-                    allTasks = await getTasks();
-                  },
-                  icon: Icons.delete,
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(
-                      20,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Slidable(
+              endActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                children: [
+                  SlidableAction(
+                    borderRadius: BorderRadius.circular(1000),
+                    backgroundColor: const Color(0xFF7BC043),
+                    foregroundColor: Colors.white,
+                    onPressed: (context) {
+                      setState(() {
+                        editTask(index, allTasks[index]);
+                      });
+                    },
+                    icon: Icons.edit,
+                  ),
+                  SlidableAction(
+                    borderRadius: BorderRadius.circular(1000),
+                    backgroundColor: const Color.fromARGB(255, 218, 8, 8),
+                    foregroundColor: Colors.white,
+                    onPressed: (context) async {
+                      setState(() {
+                        deleteTask(allTasks[index]);
+                      });
+                      allTasks = await getTasks();
+                    },
+                    icon: Icons.delete,
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(
+                        20,
+                      ),
+                    ),
+                    gradient: LinearGradient(
+                      stops: [0.1, 0.9],
+                      colors: [
+                        Color.fromRGBO(245, 71, 113, 1),
+                        Color.fromRGBO(152, 83, 206, 1),
+                      ],
                     ),
                   ),
-                  gradient: LinearGradient(
-                    stops: [0.1, 0.9],
-                    colors: [
-                      Color.fromRGBO(245, 71, 113, 1),
-                      Color.fromRGBO(152, 83, 206, 1),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Container(
+                        height: 52,
+                        width: 52,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.fromRGBO(217, 217, 217, 1),
+                        ),
+                        child: const Icon(
+                          Icons.school,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              searchList[index].title,
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              searchList[index].description,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              displayList[index].date,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          ToDoModelClass newObj = ToDoModelClass(
+                            id: allTasks[index].id,
+                            title: allTasks[index].title,
+                            description: allTasks[index].description,
+                            date: allTasks[index].date,
+                            completed: 1,
+                          );
+                          await updateTask(newObj);
+                          allTasks = await getTasks();
+                          displayList = allTasks;
+                          filterOnGoingTasks();
+                          filterCompletedTasks();
+                          if (status == 'All') {
+                            searchList = allTasks;
+                          } else if (status == 'Completed') {
+                            searchList = completedTasks;
+                          } else if (status == 'Ongoing') {
+                            searchList = ongoingTasks;
+                          }
+                          setState(() {});
+                        },
+                        child: Icon(
+                          (searchList[index].completed == 0)
+                              ? Icons.circle_outlined
+                              : Icons.check_circle,
+                          color: Colors.yellow,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                     ],
                   ),
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Container(
-                      height: 52,
-                      width: 52,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromRGBO(217, 217, 217, 1),
-                      ),
-                      child: const Icon(
-                        Icons.school,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            searchList[index].title,
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            searchList[index].description,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            displayList[index].date,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        ToDoModelClass newObj = ToDoModelClass(
-                          id: allTasks[index].id,
-                          title: allTasks[index].title,
-                          description: allTasks[index].description,
-                          date: allTasks[index].date,
-                          completed: 1,
-                        );
-                        await updateTask(newObj);
-                        allTasks = await getTasks();
-                        displayList = allTasks;
-                        filterOnGoingTasks();
-                        filterCompletedTasks();
-                        if (status == 'All') {
-                          searchList = allTasks;
-                        } else if (status == 'Completed') {
-                          searchList = completedTasks;
-                        } else if (status == 'Ongoing') {
-                          searchList = ongoingTasks;
-                        }
-                        setState(() {});
-                      },
-                      child: Icon(
-                        (searchList[index].completed == 0)
-                            ? Icons.circle_outlined
-                            : Icons.check_circle,
-                        color: Colors.yellow,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
                 ),
               ),
             ),

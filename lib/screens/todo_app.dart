@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app_intermediate/screens/bottom_sheet.dart';
@@ -12,7 +14,29 @@ TextEditingController dateController = TextEditingController();
 
 // ====================== TASK LIST ===============================
 
-List<ToDoModelClass> tasks = tasksFromDB;
+List<ToDoModelClass> allTasks = tasksFromDB;
+List<ToDoModelClass> ongoingTasks = [];
+List<ToDoModelClass> completedTasks = [];
+List<ToDoModelClass> displayList = allTasks;
+List<ToDoModelClass> searchList = [];
+
+void filterOnGoingTasks() {
+  ongoingTasks = allTasks.where((element) => element.completed == 0).toList();
+}
+
+void filterCompletedTasks() {
+  completedTasks = allTasks.where((element) => element.completed == 1).toList();
+}
+
+void updateDisplayList(String status) {
+  if (status == 'Ongoing') {
+    displayList = ongoingTasks;
+  } else if (status == 'Completed') {
+    displayList = completedTasks;
+  } else {
+    displayList = allTasks;
+  }
+}
 
 class ToDoApp extends StatefulWidget {
   const ToDoApp({super.key});
@@ -21,7 +45,16 @@ class ToDoApp extends StatefulWidget {
   State<ToDoApp> createState() => _ToDoAppState();
 }
 
+String status = 'All';
+
 class _ToDoAppState extends State<ToDoApp> {
+  @override
+  void initState() {
+    super.initState();
+    searchList = displayList;
+  }
+
+  bool completed = false;
   List<Icon> listIcon = const [
     Icon(
       Icons.school_outlined,
@@ -33,6 +66,7 @@ class _ToDoAppState extends State<ToDoApp> {
       Icons.person_outlined,
     ),
   ];
+  String pressedButton = 'All';
   // ====================== BUILD METHOD ===============================
   @override
   Widget build(BuildContext context) {
@@ -84,7 +118,7 @@ class _ToDoAppState extends State<ToDoApp> {
                   topLeft: Radius.circular(40),
                 ),
               ),
-              child: (tasks.isEmpty)
+              child: (allTasks.isEmpty)
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -132,7 +166,15 @@ class _ToDoAppState extends State<ToDoApp> {
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                             child: TextField(
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                setState(() {
+                                  searchList = displayList
+                                      .where((element) => element.title
+                                          .toLowerCase()
+                                          .contains(value.toLowerCase()))
+                                      .toList();
+                                });
+                              },
                               style: const TextStyle(
                                 color: Colors.black,
                               ),
@@ -160,106 +202,150 @@ class _ToDoAppState extends State<ToDoApp> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Container(
-                              height: 40,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Colors.deepPurple,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                    30,
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  pressedButton = 'All';
+                                  status = 'All';
+                                  searchList = allTasks;
+                                  updateDisplayList(status);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Colors.deepPurple,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      30,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'All',
-                                      style: GoogleFonts.poppins(
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'All',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Icon(
+                                        (pressedButton == 'All')
+                                            ? Icons.arrow_drop_up
+                                            : Icons.arrow_drop_down,
                                         color: Colors.white,
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.white,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
-                            Container(
-                              height: 40,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                    30,
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  pressedButton = 'Ongoing';
+                                  status = 'Ongoing';
+                                  displayList = allTasks;
+                                  ongoingTasks = displayList;
+                                  filterOnGoingTasks();
+                                  searchList = ongoingTasks;
+
+                                  updateDisplayList(status);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      30,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Ongoing',
-                                      style: GoogleFonts.poppins(
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Ongoing',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Icon(
+                                        (pressedButton == 'Ongoing')
+                                            ? Icons.arrow_drop_up
+                                            : Icons.arrow_drop_down,
                                         color: Colors.white,
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_drop_up,
-                                      color: Colors.white,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              height: 40,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                    30,
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  pressedButton = 'Completed';
+                                  status = 'Completed';
+                                  searchList = completedTasks;
+                                  filterCompletedTasks();
+                                  updateDisplayList(status);
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                height: 40,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      30,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Completed',
-                                      style: GoogleFonts.poppins(
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Completed',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Icon(
+                                        (pressedButton == 'Completed')
+                                            ? Icons.arrow_drop_up_outlined
+                                            : Icons.arrow_drop_down_outlined,
                                         color: Colors.white,
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_drop_up_outlined,
-                                      color: Colors.white,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(
+                          height: 5,
                         ),
                         todoCard(),
                       ],
@@ -271,7 +357,7 @@ class _ToDoAppState extends State<ToDoApp> {
       floatingActionButton: GestureDetector(
         onTap: () {
           clearController();
-          myBottomSheet(false);
+          myBottomSheet(false, setState);
         },
         child: Image.asset(
           'assets/add_button.png',
@@ -291,62 +377,28 @@ class _ToDoAppState extends State<ToDoApp> {
           );
         },
         shrinkWrap: true,
-        itemCount: tasks.length,
+        itemCount: searchList.length,
         itemBuilder: (context, index) {
           return Slidable(
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(111, 81, 255, 1),
-                          shape: BoxShape.circle,
-                        ),
-                        height: 32,
-                        width: 32,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              editTask(index, tasks[index]);
-                            });
-                          },
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(111, 81, 255, 1),
-                          shape: BoxShape.circle,
-                        ),
-                        height: 32,
-                        width: 32,
-                        child: GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              deleteTask(tasks[index]);
-                            });
-                            tasks = await getTasks();
-                          },
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                SlidableAction(
+                  onPressed: (context) {
+                    setState(() {
+                      editTask(index, allTasks[index]);
+                    });
+                  },
+                  icon: Icons.edit,
+                ),
+                SlidableAction(
+                  onPressed: (context) async {
+                    setState(() {
+                      deleteTask(allTasks[index]);
+                    });
+                    allTasks = await getTasks();
+                  },
+                  icon: Icons.delete,
                 ),
               ],
             ),
@@ -393,7 +445,7 @@ class _ToDoAppState extends State<ToDoApp> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            tasks[index].title,
+                            searchList[index].title,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
@@ -403,7 +455,7 @@ class _ToDoAppState extends State<ToDoApp> {
                             height: 5,
                           ),
                           Text(
-                            tasks[index].description,
+                            searchList[index].description,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                             ),
@@ -412,7 +464,7 @@ class _ToDoAppState extends State<ToDoApp> {
                             height: 5,
                           ),
                           Text(
-                            tasks[index].date,
+                            displayList[index].date,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                             ),
@@ -421,12 +473,33 @@ class _ToDoAppState extends State<ToDoApp> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        ToDoModelClass newObj = ToDoModelClass(
+                          id: allTasks[index].id,
+                          title: allTasks[index].title,
+                          description: allTasks[index].description,
+                          date: allTasks[index].date,
+                          completed: 1,
+                        );
+                        await updateTask(newObj);
+                        allTasks = await getTasks();
+                        displayList = allTasks;
+                        filterOnGoingTasks();
+                        filterCompletedTasks();
+                        if (status == 'All') {
+                          searchList = allTasks;
+                        } else if (status == 'Completed') {
+                          searchList = completedTasks;
+                        } else if (status == 'Ongoing') {
+                          searchList = ongoingTasks;
+                        }
                         setState(() {});
                       },
-                      child: const Icon(
-                        Icons.radio_button_unchecked,
-                        color: Colors.white,
+                      child: Icon(
+                        (searchList[index].completed == 0)
+                            ? Icons.circle_outlined
+                            : Icons.check_circle,
+                        color: Colors.yellow,
                       ),
                     ),
                     const SizedBox(
@@ -448,12 +521,12 @@ class _ToDoAppState extends State<ToDoApp> {
     titleController.text = todoObj!.title;
     descriptionController.text = todoObj.description;
     dateController.text = todoObj.date;
-    myBottomSheet(true, todoObj);
+    myBottomSheet(true, setState, todoObject: todoObj);
   }
 
   void deleteTask(ToDoModelClass obj) async {
     deleteTasks(obj.id);
-    tasks = await getTasks();
+    allTasks = await getTasks();
     setState(() {});
   }
 
@@ -465,7 +538,7 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   // ====================== MYBOTTOMSHEET METHOD ===============================
-  void myBottomSheet(bool isEdit, [ToDoModelClass? todoObject]) {
+  void myBottomSheet(bool isEdit, setState, {ToDoModelClass? todoObject}) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -474,8 +547,10 @@ class _ToDoAppState extends State<ToDoApp> {
         return BottomSheetHotReload(
           isEdit: isEdit,
           todoObject: todoObject,
+          homeState: setState,
         );
       },
     );
+    setState(() {});
   }
 }
